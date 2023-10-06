@@ -1,12 +1,9 @@
 package com.example.mongodb1.controller;
 
-import com.example.mongodb1.model.Country;
+import com.example.mongodb1.model.MyCountry;
 import com.example.mongodb1.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,13 +14,15 @@ public class CountryController {
     private CountryService countryService;
 
     @GetMapping("/all")
-    List<Country> getCountries() {
+    List<MyCountry> getCountries() {
         return countryService.getAllCountries();
     }
 
     @PostMapping("/add")
-    String postCountry(Country country) {
-        return countryService.addCountry(country);
+    String postCountry(MyCountry myCountry) {
+        return countryService.addCountry(myCountry);
     }
+
+
 
 }
