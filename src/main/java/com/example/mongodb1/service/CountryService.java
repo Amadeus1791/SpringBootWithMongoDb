@@ -1,11 +1,13 @@
 package com.example.mongodb1.service;
 
+import com.example.mongodb1.exception.ResourceNotFoundException;
 import com.example.mongodb1.model.MyCountry;
 import com.example.mongodb1.repo.CountryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CountryService {
@@ -18,48 +20,44 @@ public class CountryService {
         return countryRepo.findAll();
     }
 
-    public String addCountry(MyCountry myCountry) {
+    public MyCountry addCountry(MyCountry myCountry) {
         MyCountry newMyCountry = countryRepo.save(myCountry);
-        return newMyCountry.getId();
+        return newMyCountry;
     }
 
-
-    public List<MyCountry> findByName(String name) {
-        return countryRepo.findDistinctTopByName(name);
+    public MyCountry findCountry(String id) {
+        Optional<MyCountry> foundCountry = countryRepo.findById(id);
+        if (foundCountry.isEmpty()) {
+            throw new ResourceNotFoundException("this country with the id: " + id + "does not exist");
+        }
+        return foundCountry.get();
     }
 
-    public List<MyCountry> findByNameLike(String name) {
-        return countryRepo.findByNameLike(name);
+    public void deleteCountry(String id) {
+        Optional<MyCountry> foundCountry = countryRepo.findById(id);
+        if (foundCountry.isEmpty()) {
+            throw new ResourceNotFoundException("this country with the id: " + id + "does not exist");
+        }
+        countryRepo.delete(foundCountry.get());
+       // return "this country with the id:  + " +id + " + does not exist";
     }
 
-
-    public boolean existsById(String id) {
-       return countryRepo.existsById(id);
-    }
-
-    public boolean existsByName(String name) {
-        return countryRepo.existsByName(name);
-    }
-
-
-
-    public List<MyCountry> queryForAllCountriesGreaterThanPopulation(Long num) {
-        return countryRepo.findByPopulationGreaterThan(num);
-    }
-
-    public void deleteAll() {
+    public void deleteAllCountries() {
         countryRepo.deleteAll();
     }
 
-//    public List<MyCountry> listDistinctCountriesByName(String name) {
-//        return countryRepo.findDistinctByName(name);
-//    }
-
-    // Argentina
-
-    public List<MyCountry> findByPopulationIsBetweenOrderByPopulation(Long lower, Long upper) {
-        return countryRepo.findByPopulationIsBetweenOrderByPopulation(lower, upper);
+    public MyCountry updateCountry(MyCountry newCountry, String id) {
+        Optional<MyCountry> foundCountry = countryRepo.findById(id);
+        if (foundCountry.isEmpty()) {
+            throw new ResourceNotFoundException("this country with the id: " + id + "does not exist");
+        }
+        MyCountry oldCountry = foundCountry.get();
+        oldCountry.setName(newCountry.getName());
+        oldCountry.setPopulation(newCountry.getPopulation());
+        oldCountry.setShortcut(newCountry.getShortcut());
+        return countryRepo.save(oldCountry);
     }
+
 
 
 

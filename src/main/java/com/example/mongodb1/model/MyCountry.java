@@ -29,5 +29,10 @@ public class MyCountry {
         this.shortcut = shortcut;
     }
 
-
+    public MyCountry(String id, String name, Long population, String shortcut) {
+        this.id = id;
+        this.name = name;
+        this.population = population;
+        this.shortcut = shortcut;
+    }
 }

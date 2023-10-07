@@ -3,6 +3,7 @@ package com.example.mongodb1.controller;
 import com.example.mongodb1.model.MyCountry;
 import com.example.mongodb1.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +19,9 @@ public class CountryController {
         return countryService.getAllCountries();
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/add")
-    String postCountry(MyCountry myCountry) {
+    MyCountry postCountry(MyCountry myCountry) {
         return countryService.addCountry(myCountry);
     }
 

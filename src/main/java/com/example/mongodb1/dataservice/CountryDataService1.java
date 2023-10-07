@@ -2,6 +2,7 @@ package com.example.mongodb1.dataservice;
 
 import com.example.mongodb1.model.MyCountry;
 import com.example.mongodb1.service.CountryService;
+import com.example.mongodb1.service.QueryCountryService;
 import com.github.javafaker.Country;
 import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class CountryDataService1 implements CommandLineRunner {
 
     @Autowired
     private CountryService service;
+
+    @Autowired
+    private QueryCountryService queryCountryService;
 
 
     @Override
@@ -48,13 +52,13 @@ public class CountryDataService1 implements CommandLineRunner {
 
         int numberOfIterations = 4;
 
-        for (int i = 0; i < numberOfIterations; i++) {
+/*        for (int i = 0; i < numberOfIterations; i++) {
             MyCountry newCountry = countries.get(i);
             // MyCountry newCountry = new MyCountry(faker.country().name(), faker.number().numberBetween(1000, 100000000L), faker.country().countryCode2());
-            if(!service.existsByName(newCountry.getName())) {
+            if(!queryCountryService.existsByName(newCountry.getName())) {
                 service.addCountry(newCountry);
             }
-        }
+        }*/
 //        List<MyCountry> myCountries = service.queryForAllCountriesGreaterThanPopulation(123439L);
 //        System.out.println(myCountries);
 

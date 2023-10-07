@@ -2,6 +2,7 @@ package com.example.mongodb1.controller;
 
 import com.example.mongodb1.model.MyCountry;
 import com.example.mongodb1.service.CountryService;
+import com.example.mongodb1.service.QueryCountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,6 +20,9 @@ public class CountryQueryController {
     @Autowired
     private CountryService countryService;
 
+    @Autowired
+    private QueryCountryService queryCountryService;
+
 //    @GetMapping("/findbyname")
 //    ResponseEntity<MyCountry> queryByName(@RequestParam String name) {
 //        List<MyCountry> byName = countryService.findByName(name);
@@ -27,7 +31,7 @@ public class CountryQueryController {
 
     @GetMapping("findbypopulationbetween")
     ResponseEntity<List<MyCountry>> findByPopulationIsBetweenOrderByPopulation(long lower, long upper) {
-        List<MyCountry> result = countryService.findByPopulationIsBetweenOrderByPopulation(lower, upper);
+        List<MyCountry> result = queryCountryService.findByPopulationIsBetweenOrderByPopulation(lower, upper);
         if (!result.isEmpty()) {
             return new ResponseEntity<>(result, HttpStatus.OK);
         }

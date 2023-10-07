@@ -1,19 +1,25 @@
 package com.example.mongodb1.service;
 
+import com.example.mongodb1.exception.ResourceNotFoundException;
 import com.example.mongodb1.model.MyCountry;
 import com.example.mongodb1.repo.CountryRepo;
+import com.github.javafaker.Country;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.matchers.Any;
 
 import java.util.List;
+import java.util.Optional;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.MATCHER;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
 class CountryServiceTest {
@@ -57,36 +63,61 @@ class CountryServiceTest {
         // given
         when(countryRepo.save(c1)).thenReturn(c1);
         // when
-        String id = countryService.addCountry(c1);
+        MyCountry id = countryService.addCountry(c1);
         // then
-        assertThat(id).isEqualTo(c1.getId());
+        assertThat(id).isEqualTo(c1);
     }
 
     @Test
-    void findByName() {
+    void testupdateCountry() {
+        // given
+        MyCountry oldCountry = new MyCountry("1", "a", 1L, "a");
+        MyCountry newCountry = new MyCountry("2", "b", 2L, "a");
+
+        when(countryRepo.findById(oldCountry.getId())).thenReturn(Optional.of(oldCountry));
+        when(countryRepo.save(any(MyCountry.class)))
+                .thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
+
+        //String updatedString = "newName";
+
+        // when
+        MyCountry country = countryService.updateCountry(newCountry, "1");
+
+        // then
+        assertThat(country.getName()).isEqualTo(newCountry.getName());
+
     }
 
     @Test
-    void findByNameLike() {
+    void testDeleteCountry() {
+        // given
+        MyCountry oldCountry = new MyCountry("1", "a", 1L, "a");
+
+        when(countryRepo.findById(oldCountry.getId())).thenReturn(Optional.of(oldCountry));
+
+        // when
+        countryService.deleteCountry(oldCountry.getId());
+
+        // then
+        Mockito.verify(countryRepo,times(1)).delete(oldCountry);
     }
 
     @Test
-    void existsById() {
+    void testDeleteCountryWithException() {
+        // given
+        MyCountry oldCountry = new MyCountry("1", "a", 1L, "a");
+
+        when(countryRepo.findById(oldCountry.getId())).thenReturn(Optional.empty());
+
+        // when
+        //countryService.deleteCountry(oldCountry.getId());
+
+        // then
+        assertThatThrownBy(() -> countryService.deleteCountry(oldCountry.getId()))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("this country with the id: " + oldCountry.getId() + "does not exist");
+
     }
 
-    @Test
-    void existsByName() {
-    }
 
-    @Test
-    void queryForAllCountriesGreaterThanPopulation() {
-    }
-
-    @Test
-    void deleteAll() {
-    }
-
-    @Test
-    void findByPopulationIsBetweenOrderByPopulation() {
-    }
 }
